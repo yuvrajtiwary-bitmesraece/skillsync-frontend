@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SkillSync</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      /* Dark theme background */
+      background: #121212;
+      color: #fff;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .section {
+      background: rgba(255, 255, 255, 0.1); /* Glassmorphism */
+      border-radius: 15px;
+      padding: 25px;
+      margin: 20px 0;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4); /* Stronger shadow for dark theme */
+      transform: translateY(20px);
+      opacity: 0;
+      animation: slideUp 0.5s ease forwards;
+      border: 1px solid rgba(255, 255, 255, 0.2); /* Glassmorphism border */
+    }
+
+    @keyframes slideUp {
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .welcome-screen {
+      text-align: center;
+      padding: 40px;
+    }
+
+    .main-content {
+      display: none;
+    }
+
+    h1, h2 {
+      color: #fff; /* White text for dark theme */
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border: 1px solid #444; /* Darker border for input */
+      border-radius: 8px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      background: #333; /* Dark input background */
+      color: #fff;
+    }
+
+    input:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+      outline: none;
+    }
+
+    button {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      margin: 5px;
+    }
+
+    button:hover {
+      background: #764ba2;
+      transform: translateY(-2px);
+    }
+
+    .list-container {
+      background: #222; /* Darker list container */
+      border-radius: 8px;
+      padding: 15px;
+      margin-top: 15px;
+    }
+
+    li {
+      padding: 10px;
+      margin: 5px 0;
+      border-radius: 5px;
+      background: #444; /* Darker list item background */
+      list-style: none;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.5); /* Stronger shadow */
+      transition: all 0.3s ease;
+    }
+
+    li:hover {
+      transform: translateX(5px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3); /* Stronger shadow */
+    }
+
+    .profile-info {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 15px;
+      background: #222; /* Dark profile info background */
+      border-radius: 8px;
+    }
+    .brand {
+      text-align: center;
+      font-size: 2em;
+      margin-bottom: 20px;
+      color: #fff;
+    }
+
+    .watermark {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      color: rgba(255, 255, 255, 0.3);
+      font-size: 0.8em;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="brand">SkillSync : Collaborate Beyond Code</h1>
+    <!-- Welcome Screen -->
+    <div class="welcome-screen section">
+      <h1>Welcome</h1>
+      <div class="auth-forms">
+        <div class="section">
+          <h2>Register</h2>
+          <form id="registerForm">
+            <input type="text" placeholder="Name" name="name" required>
+            <input type="email" placeholder="Email" name="email" required>
+            <input type="password" placeholder="Password" name="password" required>
+            <button type="submit">Register</button>
+          </form>
+        </div>
+        <div class="section">
+          <h2>Login</h2>
+          <form id="loginForm">
+            <input type="email" placeholder="Email" name="email" required>
+            <input type="password" placeholder="Password" name="password" required>
+            <button type="submit">Login</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content (Hidden initially) -->
+    <div class="main-content">
+      <div class="section">
+        <h2>My Profile</h2>
+        <button id="getProfileBtn">Get My Profile</button>
+        <div id="profileInfo" class="profile-info"></div>
+        <form id="updateProfileForm">
+          <input type="text" placeholder="Update Name" name="name" required>
+          <button type="submit">Update Profile</button>
+        </form>
+      </div>
+
+      <div class="section">
+        <h2>Manage Skills</h2>
+        <form id="addSkillForm">
+          <input type="text" placeholder="Skill Name" name="skill" required>
+          <button type="submit">Add Skill</button>
+        </form>
+        <form id="deleteSkillForm">
+          <input type="text" placeholder="Skill Name to Delete" name="skill" required>
+          <button type="submit">Delete Skill</button>
+        </form>
+        <button id="getSkillsBtn">Get My Skills</button>
+        <ul id="skillsList" class="list-container"></ul>
+      </div>
+
+      <div class="section">
+        <h2>Community</h2>
+        <button id="getSkillsStatsBtn">View Skills Statistics</button>
+        <ul id="skillsStatsList" class="list-container"></ul>
+        <button id="getAllUsersBtn">View All Users</button>
+        <ul id="usersList" class="list-container"></ul>
+      </div>
+    </div>
+  </div>
+   <div class="watermark">Created with love by Yuvraj</div>
+
+  <script>
+    const backendURL = window.location.origin + '/api';
+    let token = null;
+
+    // Show main content after successful login
+    function showMainContent() {
+      document.querySelector('.welcome-screen').style.display = 'none';
+      document.querySelector('.main-content').style.display = 'block';
+      // Trigger animations for sections
+      document.querySelectorAll('.section').forEach((section, index) => {
+        section.style.animationDelay = `${index * 0.2}s`;
+      });
+    }
+
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      try {
+        const formData = new FormData(e.target);
+        const data = Object.fromEntries(formData.entries());
+
+        const res = await fetch(`${backendURL}/auth/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const result = await res.json();
+        alert(result.msg || JSON.stringify(result));
+      } catch (error) {
+        alert('Registration failed: ' + error.message);
+      }
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      try {
+        const formData = new FormData(e.target);
+        const data = Object.fromEntries(formData.entries());
+
+        const res = await fetch(`${backendURL}/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const result = await res.json();
+        if (result.token) {
+          token = result.token;
+          alert('Login Success ✅');
+          showMainContent();
+        } else {
+          alert(result.msg || 'Login failed');
+        }
+      } catch (error) {
+        alert('Login failed: ' + error.message);
+      }
+    });
+
+    document.getElementById('addSkillForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      try {
+        if (!token) {
+          alert('Please login first');
+          return;
+        }
+        const skill = e.target.skill.value;
+
+        const res = await fetch(`${backendURL}/user/skills`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ skill })
+        });
+        const result = await res.json();
+        alert(result.msg || JSON.stringify(result));
+        e.target.reset();
+      } catch (error) {
+        alert('Failed to add skill: ' + error.message);
+      }
+    });
+
+    document.getElementById('deleteSkillForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      try {
+        if (!token) {
+          alert('Please login first');
+          return;
+        }
+        const skill = e.target.skill.value;
+
+        const res = await fetch(`${backendURL}/user/skills/${skill}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        const result = await res.json();
+        alert(result.msg || JSON.stringify(result));
+        e.target.reset();
+      } catch (error) {
+        alert('Failed to delete skill: ' + error.message);
+      }
+    });
+
+    document.getElementById('getSkillsBtn').addEventListener('click', async () => {
+      try {
+        if (!token) {
+          alert('Please login first');
+          return;
+        }
+        const res = await fetch(`${backendURL}/user/skills`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        const result = await res.json();
+
+        const list = document.getElementById('skillsList');
+        list.innerHTML = '';
+        result.skills.forEach(skill => {
+          const li = document.createElement('li');
+          li.textContent = skill;
+          list.appendChild(li);
+        });
+        alert('Skills retrieved successfully!');
+      } catch (error) {
+        alert('Failed to get skills: ' + error.message);
+      }
+    });
+
+    document.getElementById('getProfileBtn').addEventListener('click', async () => {
+      try {
+        if (!token) {
+          alert('Please login first');
+          return;
+        }
+        const res = await fetch(`${backendURL}/user/profile`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        const result = await res.json();
+
+        const profileInfo = document.getElementById('profileInfo');
+        profileInfo.innerHTML = `
+          <p><strong>Name:</strong> ${result.name}</p>
+          <p><strong>Email:</strong> ${result.email}</p>
+        `;
+        alert('Profile retrieved successfully!');
+      } catch (error) {
+        alert('Failed to get profile: ' + error.message);
+      }
+    });
+
+    document.getElementById('updateProfileForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      try {
+        if (!token) {
+          alert('Please login first');
+          return;
+        }
+        const formData = new FormData(e.target);
+        const data = {
+          name: formData.get('name')
+        };
+
+        const res = await fetch(`${backendURL}/user/profile`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(data)
+        });
+        const result = await res.json();
+        alert(result.msg || 'Profile updated successfully!');
+        e.target.reset();
+      } catch (error) {
+        alert('Failed to update profile: ' + error.message);
+      }
+    });
+
+    document.getElementById('getAllUsersBtn').addEventListener('click', async () => {
+      try {
+        if (!token) {
+          alert('Please login first');
+          return;
+        }
+        const res = await fetch(`${backendURL}/user/all`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        const result = await res.json();
+
+        const list = document.getElementById('usersList');
+        list.innerHTML = '';
+        result.users.forEach(user => {
+          const li = document.createElement('li');
+          li.textContent = `${user.name} (${user.email}) - Skills: ${user.skills.join(', ')}`;
+          list.appendChild(li);
+        });
+        alert('Users retrieved successfully!');
+      } catch (error) {
+        alert('Failed to get users: ' + error.message);
+      }
+    });
+
+    document.getElementById('getSkillsStatsBtn').addEventListener('click', async () => {
+      try {
+        if (!token) {
+          alert('Please login first');
+          return;
+        }
+        const res = await fetch(`${backendURL}/user/skills/stats`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        const result = await res.json();
+
+        const list = document.getElementById('skillsStatsList');
+        list.innerHTML = '';
+        Object.entries(result.skillStats).forEach(([skill, data]) => {
+          const li = document.createElement('li');
+          li.textContent = `${skill} (${data.count} users): ${data.users.join(', ')}`;
+          list.appendChild(li);
+        });
+        alert('Skills statistics retrieved successfully!');
+      } catch (error) {
+        alert('Failed to get skills statistics: ' + error.message);
+      }
+    });
+  </script>
+</body>
+</html>
