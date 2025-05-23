@@ -264,8 +264,9 @@
 
     document.getElementById('registerForm').addEventListener('submit', async (e) => {
       e.preventDefault();
+      const overlay = document.getElementById('loadingOverlay');
       try {
-        document.getElementById('loadingOverlay').style.display = 'flex';
+        overlay.style.display = 'flex';
         const formData = new FormData(e.target);
         const data = Object.fromEntries(formData.entries());
 
@@ -274,19 +275,27 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data)
         });
+
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.msg || 'Registration failed');
+        }
+
         const result = await res.json();
-        document.getElementById('loadingOverlay').style.display = 'none';
-        alert(result.msg || JSON.stringify(result));
+        alert(result.msg || 'Registration successful');
+        e.target.reset();
       } catch (error) {
-        document.getElementById('loadingOverlay').style.display = 'none';
-        alert('Registration failed: ' + error.message);
+        alert(error.message || 'Registration failed. Please try again.');
+      } finally {
+        overlay.style.display = 'none';
       }
     });
 
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
+      const overlay = document.getElementById('loadingOverlay');
       try {
-        document.getElementById('loadingOverlay').style.display = 'flex';
+        overlay.style.display = 'flex';
         const formData = new FormData(e.target);
         const data = Object.fromEntries(formData.entries());
 
@@ -295,18 +304,24 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data)
         });
+
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.msg || 'Login failed');
+        }
+
         const result = await res.json();
-        document.getElementById('loadingOverlay').style.display = 'none';
         if (result.token) {
           token = result.token;
           alert('Login Success ✅');
           showMainContent();
         } else {
-          alert(result.msg || 'Login failed');
+          throw new Error('Invalid response from server');
         }
       } catch (error) {
-        document.getElementById('loadingOverlay').style.display = 'none';
-        alert('Login failed: ' + error.message);
+        alert(error.message || 'Login failed. Please try again.');
+      } finally {
+        overlay.style.display = 'none';
       }
     });
 
