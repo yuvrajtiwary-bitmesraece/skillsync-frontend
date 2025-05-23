@@ -248,25 +248,9 @@
   <script>
     const backendURL = window.location.origin + '/api';
     let token = null;
-    
-    // Check backend connection
-    async function checkBackendConnection() {
-      try {
-        const res = await fetch(`${backendURL}/auth/login`, {
-          method: 'HEAD'
-        });
-        if (res.status !== 404) {
-          document.getElementById('loadingOverlay').style.display = 'none';
-        } else {
-          setTimeout(checkBackendConnection, 2000); // Retry after 2 seconds
-        }
-      } catch (error) {
-        setTimeout(checkBackendConnection, 2000); // Retry after 2 seconds
-      }
-    }
-    
-    // Start checking backend connection
-    checkBackendConnection();
+
+    // Hide loading overlay initially
+    document.getElementById('loadingOverlay').style.display = 'none';
 
     // Show main content after successful login
     function showMainContent() {
