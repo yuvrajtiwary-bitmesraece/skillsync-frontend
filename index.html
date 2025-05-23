@@ -281,6 +281,7 @@
     document.getElementById('registerForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       try {
+        document.getElementById('loadingOverlay').style.display = 'flex';
         const formData = new FormData(e.target);
         const data = Object.fromEntries(formData.entries());
 
@@ -290,8 +291,10 @@
           body: JSON.stringify(data)
         });
         const result = await res.json();
+        document.getElementById('loadingOverlay').style.display = 'none';
         alert(result.msg || JSON.stringify(result));
       } catch (error) {
+        document.getElementById('loadingOverlay').style.display = 'none';
         alert('Registration failed: ' + error.message);
       }
     });
@@ -299,6 +302,7 @@
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       try {
+        document.getElementById('loadingOverlay').style.display = 'flex';
         const formData = new FormData(e.target);
         const data = Object.fromEntries(formData.entries());
 
@@ -308,6 +312,7 @@
           body: JSON.stringify(data)
         });
         const result = await res.json();
+        document.getElementById('loadingOverlay').style.display = 'none';
         if (result.token) {
           token = result.token;
           alert('Login Success ✅');
@@ -316,6 +321,7 @@
           alert(result.msg || 'Login failed');
         }
       } catch (error) {
+        document.getElementById('loadingOverlay').style.display = 'none';
         alert('Login failed: ' + error.message);
       }
     });
