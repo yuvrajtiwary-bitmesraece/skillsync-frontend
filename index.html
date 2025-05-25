@@ -11,25 +11,19 @@
       font-family: 'Poppins', sans-serif;
     }
 
-    .overlay {
+    .loading-overlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.9);
-      display: none;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
       justify-content: center;
       align-items: center;
-      flex-direction: column;
       z-index: 1000;
-    }
-
-    .loading-text {
-      color: #667eea;
-      font-size: 24px;
-      margin-top: 20px;
-      text-align: center;
+      flex-direction: column;
+      gap: 20px;
     }
 
     .loading-spinner {
@@ -46,18 +40,10 @@
       100% { transform: rotate(360deg); }
     }
 
-    .loading-subtitle {
-      color: #764ba2;
-      font-size: 16px;
-      margin-top: 10px;
-      opacity: 0;
-      animation: fadeInOut 2s infinite;
-    }
-
-    @keyframes fadeInOut {
-      0% { opacity: 0; }
-      50% { opacity: 1; }
-      100% { opacity: 0; }
+    .loading-message {
+      color: white;
+      font-size: 1.2em;
+      text-align: center;
     }
 
     body {
@@ -191,10 +177,10 @@
   </style>
 </head>
 <body>
-  <div class="overlay" id="loadingOverlay">
+  <div id="loadingOverlay" class="loading-overlay">
     <div class="loading-spinner"></div>
-    <div class="loading-text">Connecting to SkillSync</div>
-    <div class="loading-subtitle" id="loadingSubtitle">Building your skillverse... just a few more semicolons!</div>
+    <div class="loading-message">Connecting to SkillSync backend...</div>
+    <div class="loading-message">Good things take time, please wait ✨</div>
   </div>
   <div class="container">
     <h1 class="brand">SkillSync : Collaborate Beyond Code</h1>
@@ -263,6 +249,9 @@
     const backendURL = 'https://skillsync-backend-u3ke.onrender.com/api';
     let token = null;
 
+    // Hide loading overlay initially
+    document.getElementById('loadingOverlay').style.display = 'none';
+
     // Show main content after successful login
     function showMainContent() {
       document.querySelector('.welcome-screen').style.display = 'none';
@@ -273,22 +262,11 @@
       });
     }
 
-    function showLoadingOverlay(message) {
-      const overlay = document.getElementById('loadingOverlay');
-      const subtitle = document.getElementById('loadingSubtitle');
-      overlay.style.display = 'flex';
-      subtitle.textContent = message;
-    }
-
-    function hideLoadingOverlay() {
-      const overlay = document.getElementById('loadingOverlay');
-      overlay.style.display = 'none';
-    }
-
     document.getElementById('registerForm').addEventListener('submit', async (e) => {
       e.preventDefault();
+      const overlay = document.getElementById('loadingOverlay');
       try {
-        showLoadingOverlay('Building your skillverse... just a few more semicolons!');
+        overlay.style.display = 'flex';
         const formData = new FormData(e.target);
         const data = Object.fromEntries(formData.entries());
 
@@ -297,18 +275,27 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data)
         });
+
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.msg || 'Registration failed');
+        }
+
         const result = await res.json();
-        hideLoadingOverlay();
-        alert(result.msg || JSON.stringify(result));
+        alert(result.msg || 'Registration successful');
+        e.target.reset();
       } catch (error) {
-        hideLoadingOverlay();
-        alert('Registration failed: ' + error.message);
+        alert(error.message || 'Registration failed. Please try again.');
+      } finally {
+        overlay.style.display = 'none';
       }
     });
 
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
+      const overlay = document.getElementById('loadingOverlay');
       try {
+        overlay.style.display = 'flex';
         const formData = new FormData(e.target);
         const data = Object.fromEntries(formData.entries());
 
@@ -317,16 +304,24 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data)
         });
+
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.msg || 'Login failed');
+        }
+
         const result = await res.json();
         if (result.token) {
           token = result.token;
           alert('Login Success ✅');
           showMainContent();
         } else {
-          alert(result.msg || 'Login failed');
+          throw new Error('Invalid response from server');
         }
       } catch (error) {
-        alert('Login failed: ' + error.message);
+        alert(error.message || 'Login failed. Please try again.');
+      } finally {
+        overlay.style.display = 'none';
       }
     });
 
