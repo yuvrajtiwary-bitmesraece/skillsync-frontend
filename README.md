@@ -80,4 +80,22 @@ The frontend communicates with the SkillSync backend via the following REST API 
 
 This setup ensures secure and efficient data exchange between frontend and backend.
 
+## Screenshots
+
+### 1. Welcome Screen  
+![Welcome Screen](https://raw.githubusercontent.com/yuvrajtiwary-bitmesraece/skillsync-frontend/main/Welcome%20Screen.png)  
+
+User registration and login forms for seamless onboarding.
+
+### 2. Main Dashboard  
+![Main Dashboard](https://raw.githubusercontent.com/yuvrajtiwary-bitmesraece/skillsync-frontend/main/Main%20Dashboard.png)  
+
+Displays user profile, skill management, and community sections.
+
+
+
+## Thank You
+
+Grateful for your time and attention — it truly means a lot!
+
 
